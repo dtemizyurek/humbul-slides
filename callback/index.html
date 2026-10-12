@@ -1,0 +1,27 @@
+<!doctype html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Humbul TikTok Bağlantısı</title><link rel="stylesheet" href="../style.css"></head><body><main>
+<div class="brand">HUMBUL</div><h1 id="h">TikTok bağlantısı</h1>
+<p id="msg">Kod okunuyor…</p>
+<div class="code" id="code" hidden></div>
+<button id="copy" hidden>Kodu kopyala</button>
+<p class="muted" id="note" hidden>Kodu Terminal'e yapıştır. Kod birkaç dakika içinde geçersiz olur.</p>
+<script>
+const q = new URLSearchParams(location.search);
+const code = q.get("code"), err = q.get("error"), state = q.get("state") || "";
+const $ = (id) => document.getElementById(id);
+if (code) {
+  const value = code + (state ? "|" + state : "");
+  $("msg").textContent = "TikTok izni verildi. Aşağıdaki kodu kopyalayıp Terminal'e yapıştır.";
+  $("code").textContent = value; $("code").hidden = false; $("copy").hidden = false; $("note").hidden = false;
+  $("copy").onclick = async () => {
+    try { await navigator.clipboard.writeText(value); $("copy").textContent = "Kopyalandı"; }
+    catch { const r = document.createRange(); r.selectNodeContents($("code")); getSelection().removeAllRanges(); getSelection().addRange(r); $("copy").textContent = "Seçildi, Cmd+C ile kopyala"; }
+  };
+} else if (err) {
+  $("h").textContent = "Bağlantı yapılamadı";
+  $("msg").textContent = "TikTok şunu döndürdü: " + err + " " + (q.get("error_description") || "");
+} else {
+  $("msg").textContent = "Bu sayfa TikTok girişinden sonra açılır. Girişi Terminal'deki komutla başlat.";
+}
+</script>
+</main></body></html>
